@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Heysel</title>
+    <meta charset="UTF-8" />
+    <meta name="description" content="Practica Programacion Web - Tienda Online" />
+    <meta name="author" content="Enrique Acedo" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+	<link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet"></link>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+    <style type="text/css">
+    .container{
+	    min-height: 700px;
+    }
+    
+    .centrada{
+	    text-align: center;
+	    vertical-align: middle;
+    }
+    </style>
+</head>
+
+<body id="body">
+
+    <div class="container">
+        <div id="header">
+          <nav class="navbar navbar-inverse ">
+                <div class="container-fluid"> 
+                    <div class="navbar-header">
+                        <a class="navbar-brand" href="/">Heysel</a> 
+                    </div>
+                    <div class="col-md-8">
+                        <ul class="nav navbar-nav">
+                            <li class="" ><a href="/tienda?categoria=todo">Tienda</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-3">
+                        <ul class="nav navbar-nav">
+                           <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Cesta  <span class="glyphicon glyphicon-shopping-cart"></span> <span class="badge" th:text="${cesta_size}">0</span></a>
+                            
+                            	<ul class="dropdown-menu">
+									<li>
+										<table class="table">
+											<tr th:each="producto : ${productos_cesta}">
+												<td><img th:src='${producto.getImage()}'  height="50"/></td>
+												<td><p th:text='${producto.getName()}'></p></td>
+											</tr>
+											<tr>
+					                        	<td th:if="${total > 0}" ><h4>TOTAL</h4> </td>
+												<td th:if="${total > 0}" ><h4 th:text='${total + " €"}'></h4></td>
+					                        </tr>
+										</table>
+									</li>
+									
+									<li th:if="${cesta_size > 0}"><a href="./cesta"><button type="submit" class="btn btn-success">Comprar</button></a></li> 
+									<li th:if="${total == 0}">Cesta vacía</li>
+
+								</ul>
+							</li>
+                           <li>
+							<a onclick="document.formulario_logout.submit()"><span type="submit" class="glyphicon glyphicon-log-out"></span></a>
+
+                           	<form role="form" name="formulario_logout" th:action="@{/logout}" method="post">
+                           		<input type="hidden"></input>
+                           	</form>
+                           </li>                           </ul>
+                    </div>
+                </div>    
+            </nav>        </div>
+        <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-10">
+                <ol class="breadcrumb">
+                    <li><a href="#">Home</a></li> 
+                </ol>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-10">
+
+                <div class="col-md-12">
+                    <h1>Pedidos /<a href="/admin_product?categoria=todo">Productos</a></h1>
+					 <form name="formulario" th:action="@{/editProduct}" method="post">
+
+						 <div class="form-group col-md-6">
+							 <label for="rad">User:</label>
+							 <input type="text" name="apellidos" id="input" class ="form-control" th:value="${user}"></input>
+						 </div>
+						 <div class="form-group col-md-6">
+							 <label for="rad">Nick:</label>
+							 <input type="text" name="username" id="input" class ="form-control" th:value="${user}"> </input>
+						 </div>
+					</form>
+
+                   
+                    <table class="table">
+	                    <tr th:each="pedido: ${pedidos}">
+	                    	<td><a th:href="@{./show(num_producto=${pedido.getId()})}"><p th:text='${pedido.getFecha()}'></p></a></td>
+							<td><a th:href="@{./show(num_producto=${pedido.getId()})}"><p th:text='${pedido.getName()}'></p></a></td>
+							<td><a th:href="@{./show(num_producto=${pedido.getId()})}"><p th:text='${pedido.getEstado()}'></p></a></td> 
+	                      </tr>
+                    </table>
+                </div>
+            </div>
+
+        </div>                    
+
+    </div>
+	<script>
+    	function filtrar(){
+	    	var estado=document.getElementById("estado").value;
+	    	location.href="/admin?estado=" + estado;
+    	}
+    </script>
+    <footer class="footer"> 
+        <div class="containter_f">
+            <p class="text-center">Practica Tienda Online - Enrique Acedo - 2015</p> 
+        </div>
+    </footer>
+</body>
+</html>

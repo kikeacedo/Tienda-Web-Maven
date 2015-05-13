@@ -1,0 +1,121 @@
+ <!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Heysel</title>
+        <meta charset="UTF-8" />
+        <meta name="description" content="Practica Programacion Web - Tienda Online" />
+        <meta name="author" content="Enrique Acedo" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet"></link>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+        <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+		<style type="text/css">
+			.container{
+		    min-height: 700px;
+			}
+		</style>
+    </head>
+    
+    <body id="body">
+    
+     <div class="container">
+     		<div id="header">
+	     		<nav class="navbar navbar-inverse ">
+                <div class="container-fluid"> 
+                    <div class="navbar-header">
+                        <a class="navbar-brand" href="/">Heysel</a> 
+                    </div>
+                    <div class="col-md-8">
+                        <ul class="nav navbar-nav">
+                            <li class="" ><a href="/tienda?categoria=todo">Tienda</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-3">
+                        <ul class="nav navbar-nav">
+                           <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Cesta  <span class="glyphicon glyphicon-shopping-cart"></span> <span class="badge" th:text="${cesta_size}">0</span></a>
+                            
+                            	<ul class="dropdown-menu">
+									<li>
+										<table class="table">
+											<tr th:each="producto : ${productos_cesta}">
+												<td><img th:src='${producto.getImage()}'  height="50"/></td>
+												<td><p th:text='${producto.getName()}'></p></td>
+											</tr>
+											<tr>
+					                        	<td th:if="${total > 0}" ><h4>TOTAL</h4> </td>
+												<td th:if="${total > 0}" ><h4 th:text='${total + " €"}'></h4></td>
+					                        </tr>
+										</table>
+									</li>
+									
+									<li th:if="${cesta_size > 0}"><a href="./cesta"><button type="submit" class="btn btn-success">Comprar</button></a></li> 
+									<li th:if="${total == 0}">Cesta vacía</li>
+
+								</ul>
+							</li>
+                            <li>
+							<a href="/admin?estado=Todos"><span type="submit" class="glyphicon glyphicon-user"></span></a>
+
+                       
+                           </li>                       </ul>
+                    </div>
+                </div>    
+            </nav>     		</div>
+            <div class="row">
+            	<div class="col-md-1"></div>
+            	<div class="col-md-10">
+	            	<ol class="breadcrumb">
+						<li><a href="#">Home</a></li> 
+					</ol>
+            	</div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-1"></div>
+            	<div class="col-md-10">
+	            	<h2 class="text"> <a href="./tienda?categoria=ofertas">Ofertas!</a></h2>
+	                    <hr></hr>
+	            	<div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+					  <!-- Indicators -->
+					  <ol class="carousel-indicators">
+					    <li  th:each=" producto, it : ${productos}" data-target="#carousel-example-generic" th:class="${it.index == 0}? 'active' : n "></li>
+
+					  </ol>
+					
+					  <!-- Wrapper for slides -->
+					  <div class="carousel-inner" role="listbox">
+					    <div th:each="producto, it : ${productos}" th:class="${it.index == 0}? ' item active' : item " >
+					    	<a th:href="@{./show(num_producto=${producto.getId()})}">
+						      <img th:src='${producto.getImage()}'  height="200"/>
+						      <div class="carousel-caption" >
+						        <h1 th:text='${producto.getPrice() + "€ al " + producto.getOferta() + "%"}'></h1>
+						        <h2 th:text='${producto.getName()}'></h2>
+						       <p th:text='${producto.getDescription()}'></p>
+						      </div>
+					    	</a>
+					    </div>					
+					  </div>
+					
+					  <!-- Controls -->
+					  <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
+					    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+					    <span class="sr-only">Previous</span>
+					  </a>
+					  <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
+					    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+					    <span class="sr-only">Next</span>
+					  </a>
+					</div>					  
+
+            	</div>
+            </div>
+            
+        </div>
+            
+        <footer class="footer"> 
+        	<div class="containter">
+				<p class="text-center">Practica Tienda Online - Enrique Acedo - 2015</p> 
+        	</div>
+		</footer>
+    </body>
+</html>
