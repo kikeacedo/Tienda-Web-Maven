@@ -94,9 +94,10 @@
            
                     <table class="table">
 	                    <tr th:each="producto: ${productos}">
-	                    	<td><a th:href="@{./editProduct(id=${producto.getId()})}"><p th:text='${producto.getName()}'></p></a></td>
-							<td><a th:href="@{./editProduct(id=${producto.getId()})}"><p th:text='${producto.getCategoria()}'></p></a></td>
-							<td><a th:href="@{./editProduct(id=${producto.getId()})}"><p th:text='${producto.getPrice()}'></p></a></td> 
+	                    	<td><a th:href="@{./edit(id=${producto.getId()})}"><p th:text='${producto.getName()}'></p></a></td>
+							<td><a th:href="@{./edit(id=${producto.getId()})}"><p th:text='${producto.getCategoria()}'></p></a></td>
+							<td><a th:href="@{./edit(id=${producto.getId()})}"><p th:text='${producto.getPrice()}'></p></a></td> 
+							<td><a th:href="@{./remove(id=${producto.getId()})}"><span class="glyphicon glyphicon-trash"></span></a></td>
 	                      </tr>
 	                      	<tr>
 	                      		<td><a href="/newProduct"><span class="glyphicon glyphicon-plus"></span></a></td>

@@ -159,7 +159,7 @@ public class AppController{
 				.addObject("total", calcular_precio_cesta());
 	}
 
-	@Secured({ "ROLE_USER"})
+	@Secured({ "ROLE_USER", "ROLE_ADMIN"})
 	@RequestMapping("/buy")
 	public ModelAndView buy(){
 		Authentication auth = SecurityContextHolder .getContext().getAuthentication();
@@ -240,19 +240,29 @@ public class AppController{
 
 	}
 
-	
+
 	@Secured({ "ROLE_ADMIN"})
-	@RequestMapping("/editProduct")
-	public ModelAndView newProduct(@RequestParam int id){
+	@RequestMapping("/edit")
+	public ModelAndView edit(@RequestParam int id){
+
+		List<Imagen> imagenes_aux = imagen_repository.findByProducto(id);
+		String imagenes = "";
+
+		for(Imagen i : imagenes_aux){
+			imagenes += i.getUrl() + " ";
+		}
+
+
 		return new ModelAndView("newProduct").addObject("producto", producto_repository.findById(id))
 				.addObject("boton", "Editar")
+				.addObject("imagenes", imagenes)
 				.addObject("edit", true);
 
 	}
 
 	@Secured({ "ROLE_ADMIN"})
-	@RequestMapping("/addProduct")
-	public ModelAndView addProduct(){
+	@RequestMapping("/newProduct")
+	public ModelAndView newProduct(){
 		return new ModelAndView("newProduct").addObject("boton", "Añadir")
 				.addObject("edit", false);
 
@@ -260,17 +270,56 @@ public class AppController{
 
 	@Secured({ "ROLE_ADMIN"})
 	@RequestMapping("/addProduct")
-	public ModelAndView addProduct(@RequestParam String name, String descripcion, double price, double oferta, String categoria,String imagenes, String enviar){
-		if(enviar == "Editar"){
+	public ModelAndView addProduct(@RequestParam String name, String descripcion, double price, double oferta, String categoria, String imagen, String imagenes){		
+		Producto producto_nuevo = producto_repository.save(new Producto(name, descripcion, price, oferta, imagen, categoria));
 
-		}else{
-
-			String[] images = imagenes.split(" "); 	
-			producto_repository.save(new Producto(name, descripcion, price, oferta, images[0], categoria));
+		String[] aux = imagenes.split(" ");
+		System.out.println(imagen);
+		for(int i = 0; i < aux.length; i++){
+			imagen_repository.save(new Imagen(producto_nuevo.getId(), aux[i]));
 		}
-		
-		return  new ModelAndView("newProduct");
+		return new ModelAndView("redirect:" + "/admin_product?categoria=todo");
 	}
+
+	@Secured({ "ROLE_ADMIN"})
+	@RequestMapping("/editProduct")
+	public ModelAndView editProduct(@RequestParam int id, String name, String descripcion, double price, double oferta, String categoria, String imagen, String imagenes){
+		System.out.println(imagen);
+
+		Producto producto = producto_repository.findById(id);
+
+		List<Imagen> imagenes_borrar = imagen_repository.findByProducto(id);
+
+		for(Imagen i : imagenes_borrar){
+			imagen_repository.delete(i);
+		}
+
+		String[] aux = imagenes.split(" ");
+
+		for(int i = 0; i < aux.length; i++){
+			imagen_repository.save(new Imagen(id, aux[i]));
+		}
+
+		producto.setCategoria(categoria);
+		producto.setDescription(descripcion);
+		producto.setImage(imagenes);
+		producto.setName(name);
+		producto.setOferta(oferta);
+		producto.setPrice(price);
+
+		return new ModelAndView("redirect:" + "/admin_product?categoria=todo");
+	}
+
+	@Secured({ "ROLE_ADMIN"})
+	@RequestMapping("/remove")
+	public ModelAndView removeProduct(@RequestParam int id){
+
+		producto_repository.delete(producto_repository.findById(id));
+
+		return new ModelAndView("redirect:" + "/admin_product?categoria=todo");
+
+	}
+
 
 	@Secured({ "ROLE_ADMIN"})
 	@RequestMapping("/admin_usuario")
@@ -292,13 +341,13 @@ public class AppController{
 
 		return new ModelAndView("login").addObject("correcto",true);
 	}
-	
+
 	@Secured({ "ROLE_ADMIN"})
 	@RequestMapping("/newUserForm")
 	public ModelAndView newUser(){
 		return new ModelAndView("newUser");
 	}
-	
+
 
 
 
