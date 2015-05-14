@@ -274,7 +274,6 @@ public class AppController{
 		Producto producto_nuevo = producto_repository.save(new Producto(name, descripcion, price, oferta, imagen, categoria));
 
 		String[] aux = imagenes.split(" ");
-		System.out.println(imagen);
 		for(int i = 0; i < aux.length; i++){
 			imagen_repository.save(new Imagen(producto_nuevo.getId(), aux[i]));
 		}
@@ -284,7 +283,6 @@ public class AppController{
 	@Secured({ "ROLE_ADMIN"})
 	@RequestMapping("/editProduct")
 	public ModelAndView editProduct(@RequestParam int id, String name, String descripcion, double price, double oferta, String categoria, String imagen, String imagenes){
-		System.out.println(imagen);
 
 		Producto producto = producto_repository.findById(id);
 
@@ -302,11 +300,12 @@ public class AppController{
 
 		producto.setCategoria(categoria);
 		producto.setDescription(descripcion);
-		producto.setImage(imagenes);
+		producto.setImage(imagen);
 		producto.setName(name);
 		producto.setOferta(oferta);
 		producto.setPrice(price);
-
+		
+		producto_repository.save(producto);
 		return new ModelAndView("redirect:" + "/admin_product?categoria=todo");
 	}
 

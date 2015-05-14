@@ -82,8 +82,8 @@ public class Producto {
 		this.categoria = categoria;
 	}
 	
-	public double calcularPrecio(){
-		return this.price*(1-this.oferta/100);
+	public int calcularPrecio(){
+		return (int) (this.price*(1-this.oferta/100));
 	}
 	
 }//Component
