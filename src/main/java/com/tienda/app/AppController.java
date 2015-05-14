@@ -346,6 +346,8 @@ public class AppController{
 	public ModelAndView newUser(){
 		return new ModelAndView("newUser");
 	}
+	
+
 
 
 
