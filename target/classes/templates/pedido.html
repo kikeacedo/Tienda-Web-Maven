@@ -75,8 +75,10 @@
             <div class="col-md-10">
 
                 <div class="col-md-12">
-                    <h1>Pedidos /<a href="/admin_product?categoria=todo">Productos</a> / <a href="/admin_usuario?name=">Usuarios</a></h1>
-                    <select class="form-control" onchange="filtrar()" id="estado">
+                    <h1 th:if="${administrador}">Pedidos /<a href="/admin_product?categoria=todo">Productos</a> / <a href="/admin_usuario?name=">Usuarios</a></h1>
+                    <h1 th:if="${not administrador}" th:text="${'Pedidos de: '+ user}"> Pedidos </h1>
+
+                    <select th:if="${administrador}" class="form-control" onchange="filtrarEstado()" id="estado_list">
                     		<option value="">Estado</option>
                         	<option th:each="estado: ${estados}" th:value="${estado}" th:text="${estado}"></option>
                     </select>
@@ -85,30 +87,27 @@
 	                    	<td><p th:text='${pedido.getFecha()}'></p></td>
 							<td><p th:text='${pedido.getName()}'></p></td>
 							<td><p th:text='${pedido.getEstado()}'></p></td> 
-							<td>
-								<select class="form-control" onchange="cambiarEstado()" th:id="${'estado_pedido_' + pedido.getId()}">
-									<option th:each="estado: ${estados}" th:value="${estado}" th:text="${estado}"></option>
-								</select>
+							<td th:if="${administrador}">
+								<form name="formulario" th:action="${'/cambiarEstado?id=' + pedido.getId() }" method="post">
+									<select class="form-control" id="estado" name="estado" onchange="this.form.submit()">
+										<option th:each="estado: ${estados}" th:value="${estado}" th:text="${estado}"></option>
+									</select>
+								</form>
 							</td>
 	                      </tr>
                     </table>
+                    	<script>
+					    	function filtrarEstado(){
+						    	var estado=document.getElementById("estado_list").value;
+						    	location.href="/admin?estado=" + estado;
+					    	}
+					    </script>
                 </div>
             </div>
 
         </div>                    
 
     </div>
-	<script>
-    	function filtrar(){
-	    	var estado=document.getElementById("estado").value;
-	    	location.href="/admin?estado=" + estado;
-    	}
-    	
-    	function cambiarEstado(){
-    		var str = document.
-	    	var array = str.split(" ");
-    	}
-    </script>
     <footer class="footer"> 
         <div class="containter_f">
             <p class="text-center">Practica Tienda Online - Enrique Acedo - 2015</p> 

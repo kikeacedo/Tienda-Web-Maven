@@ -57,11 +57,13 @@
 
 								</ul>
 							</li>
-                           <li>
-							<a href="/admin?estado=Todos"><span type="submit" class="glyphicon glyphicon-user"></span></a>
+                            <li th:if="${not sesion_iniciada}"><a href="/admin?estado=Todos"><span type="submit" class="glyphicon glyphicon-user"></span></a></li>
+                            <li th:if="${sesion_iniciada}"><a onclick="document.formulario_logout.submit()"><span type="submit" class="glyphicon glyphicon-log-out"></span></a>
 
-                       
-                           </li>                   </ul>
+	                           	<form role="form" name="formulario_logout" th:action="@{/logout}" method="post">
+	                           		<input type="hidden"></input>
+	                           	</form>
+						   	</li>                  </ul>
                     </div>
                 </div>    
             </nav>
@@ -70,7 +72,7 @@
             <div class="col-md-1"></div>
             <div class="col-md-10">
                 <ol class="breadcrumb">
-                    <li><a href="./">Home</a> / <a href="./tienda"> Tienda </a> / <a href="#"> Comprar </a></li> 
+                    <li><a href="./">Home</a> / <a href="./tienda?categoria=todo"> Tienda </a> / <a href="#"> Comprar </a></li> 
                 </ol>
             </div>
         </div>

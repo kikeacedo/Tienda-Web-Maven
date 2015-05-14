@@ -15,9 +15,11 @@ import org.springframework.web.context.WebApplicationContext;
 public class UserCookie {
 
 	private HashMap<Integer,Integer> lista_productos;
+	private boolean sesion_iniciada;
 
 	public UserCookie(){
 		lista_productos = new HashMap<Integer,Integer>();
+		setSesion_iniciada(false);
 	}
 
 	public HashMap<Integer,Integer> getLista_productos() {
@@ -52,5 +54,13 @@ public class UserCookie {
 
 		return size;
 	}//size()
+
+	public boolean isSesion_iniciada() {
+		return sesion_iniciada;
+	}
+
+	public void setSesion_iniciada(boolean sesion_iniciada) {
+		this.sesion_iniciada = sesion_iniciada;
+	}
 
 }

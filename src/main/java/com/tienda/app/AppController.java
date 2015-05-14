@@ -34,15 +34,14 @@ public class AppController{
 	@Autowired
 	private PedidoRepository pedido_repository;
 
-
-
 	@RequestMapping("/")
 	public ModelAndView index() {
 		return new ModelAndView("index").addObject("productos", producto_repository.selectOfertas())
 				.addObject("cesta_size", user_cookie.size())
 				.addObject("productos_cesta",coger_cesta(user_cookie.getLista_productos()))
 				.addObject("cookie", user_cookie.getLista_productos())
-				.addObject("total", calcular_precio_cesta());
+				.addObject("total", calcular_precio_cesta())
+				.addObject("sesion_iniciada", user_cookie.isSesion_iniciada());
 	}
 
 
@@ -60,21 +59,24 @@ public class AppController{
 					.addObject("productos_cesta",coger_cesta(user_cookie.getLista_productos()))
 					.addObject("cookie", user_cookie.getLista_productos())
 					.addObject("categorias", producto_repository.selectCategorias())
-					.addObject("total", calcular_precio_cesta());
+					.addObject("total", calcular_precio_cesta())
+					.addObject("sesion_iniciada", user_cookie.isSesion_iniciada());
 		}else if(categoria.equals("ofertas")){
 			modelo= new ModelAndView("home").addObject("productos", producto_repository.selectOfertas())
 					.addObject("cesta_size", user_cookie.size())
 					.addObject("productos_cesta",coger_cesta(user_cookie.getLista_productos()))
 					.addObject("cookie", user_cookie.getLista_productos())
 					.addObject("categorias", producto_repository.selectCategorias())
-					.addObject("total", calcular_precio_cesta());
+					.addObject("total", calcular_precio_cesta())
+					.addObject("sesion_iniciada", user_cookie.isSesion_iniciada());
 		}else{
 			modelo= new ModelAndView("home").addObject("productos", producto_repository.findByCategoria(categoria))
 					.addObject("cesta_size", user_cookie.size())
 					.addObject("productos_cesta",coger_cesta(user_cookie.getLista_productos()))
 					.addObject("cookie", user_cookie.getLista_productos())
 					.addObject("categorias", producto_repository.selectCategorias())
-					.addObject("total", calcular_precio_cesta());
+					.addObject("total", calcular_precio_cesta())
+					.addObject("sesion_iniciada", user_cookie.isSesion_iniciada());
 		}
 		return modelo;
 
@@ -88,7 +90,8 @@ public class AppController{
 				.addObject("productos_cesta",coger_cesta(user_cookie.getLista_productos()))
 				.addObject("cookie", user_cookie.getLista_productos())
 				.addObject("categorias", producto_repository.selectCategorias())
-				.addObject("total", calcular_precio_cesta());
+				.addObject("total", calcular_precio_cesta())
+				.addObject("sesion_iniciada", user_cookie.isSesion_iniciada());
 	}
 
 	@RequestMapping("/show")
@@ -111,7 +114,8 @@ public class AppController{
 				.addObject("cesta_size", user_cookie.size())
 				.addObject("cookie", user_cookie.getLista_productos())
 				.addObject("productos_cesta",coger_cesta(user_cookie.getLista_productos()))
-				.addObject("total", calcular_precio_cesta());
+				.addObject("total", calcular_precio_cesta())
+				.addObject("sesion_iniciada", user_cookie.isSesion_iniciada());
 
 
 	}
@@ -125,7 +129,8 @@ public class AppController{
 				.addObject("cookie", user_cookie.getLista_productos())
 				.addObject("productos_cesta",coger_cesta(user_cookie.getLista_productos()))
 				.addObject("categorias", producto_repository.selectCategorias())
-				.addObject("total", calcular_precio_cesta());
+				.addObject("total", calcular_precio_cesta())
+				.addObject("sesion_iniciada", user_cookie.isSesion_iniciada());
 	}
 
 	@RequestMapping("/addandbuy")
@@ -135,7 +140,8 @@ public class AppController{
 				.addObject("cesta_size", user_cookie.size())
 				.addObject("cookie", user_cookie.getLista_productos())
 				.addObject("productos_cesta",coger_cesta(user_cookie.getLista_productos()))
-				.addObject("total", calcular_precio_cesta());
+				.addObject("total", calcular_precio_cesta())
+				.addObject("sesion_iniciada", user_cookie.isSesion_iniciada());
 	}
 
 
@@ -146,7 +152,8 @@ public class AppController{
 				.addObject("cesta_size", user_cookie.size())
 				.addObject("productos_cesta",coger_cesta(user_cookie.getLista_productos()))
 				.addObject("cookie", user_cookie.getLista_productos())
-				.addObject("total", calcular_precio_cesta());
+				.addObject("total", calcular_precio_cesta())
+				.addObject("sesion_iniciada", user_cookie.isSesion_iniciada());
 	}
 
 
@@ -156,7 +163,8 @@ public class AppController{
 				.addObject("cesta_size", user_cookie.size())
 				.addObject("productos_cesta",coger_cesta(user_cookie.getLista_productos()))
 				.addObject("cookie", user_cookie.getLista_productos())
-				.addObject("total", calcular_precio_cesta());
+				.addObject("total", calcular_precio_cesta())
+				.addObject("sesion_iniciada", user_cookie.isSesion_iniciada());
 	}
 
 	@Secured({ "ROLE_USER", "ROLE_ADMIN"})
@@ -164,10 +172,13 @@ public class AppController{
 	public ModelAndView buy(){
 		Authentication auth = SecurityContextHolder .getContext().getAuthentication();
 		int id = user_repository.findByUsername(auth.getName()).getId();
+		
+		user_cookie.setSesion_iniciada(true);
 
 		if(user_cookie.size()>0)
 			pedido_repository.save(new Pedido(id, user_cookie.getLista_productos(),crearNombre(user_cookie.getLista_productos())));
 		user_cookie.vaciar();
+		
 
 
 
@@ -175,7 +186,11 @@ public class AppController{
 				.addObject("cesta_size", user_cookie.size())
 				.addObject("productos_cesta",coger_cesta(user_cookie.getLista_productos()))
 				.addObject("cookie", user_cookie.getLista_productos())
-				.addObject("total", calcular_precio_cesta());
+				.addObject("total", calcular_precio_cesta())
+				.addObject("estados",Estado.values())
+				.addObject("administrador", false)
+				.addObject("user",user_repository.findByUsername(auth.getName()).getName())
+				.addObject("sesion_iniciada", user_cookie.isSesion_iniciada());
 	}
 
 
@@ -189,7 +204,8 @@ public class AppController{
 					.addObject("productos_cesta",coger_cesta(user_cookie.getLista_productos()))
 					.addObject("cookie", user_cookie.getLista_productos())
 					.addObject("estados",Estado.values())
-					.addObject("total", calcular_precio_cesta());
+					.addObject("total", calcular_precio_cesta())
+					.addObject("administrador", true);
 
 		}else{
 			modelo = new ModelAndView("pedido").addObject("pedidos", pedido_repository.findByEstado(estado))
@@ -197,17 +213,23 @@ public class AppController{
 					.addObject("productos_cesta",coger_cesta(user_cookie.getLista_productos()))
 					.addObject("cookie", user_cookie.getLista_productos())
 					.addObject("estados",Estado.values())
-					.addObject("total", calcular_precio_cesta());
+					.addObject("total", calcular_precio_cesta())
+					.addObject("administrador", true);
 		}
 		return modelo;
 	}
-
+	
 	@Secured({ "ROLE_ADMIN"})
-	@RequestMapping("/show_pedido")
-	public ModelAndView adminProduct(@RequestParam int pedido){
-		return new ModelAndView("producto").addObject("pedido", pedido_repository.findById(pedido))
-				.addObject("productos", coger_cesta(pedido_repository.findById(pedido).getProductos()));
+	@RequestMapping("/cambiarEstado")
+	public ModelAndView adminProduct(@RequestParam int id,Estado estado){
+		Pedido pedido = pedido_repository.findById(id);
+		pedido.setEstado(estado);
+		pedido_repository.save(pedido);
+		return new ModelAndView("redirect:" + "/admin?estado=Todos");
+
 	}
+	
+	
 
 	@Secured({ "ROLE_ADMIN"})
 	@RequestMapping("/admin_product")
